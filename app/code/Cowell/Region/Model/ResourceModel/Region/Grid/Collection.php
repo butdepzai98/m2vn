@@ -10,6 +10,9 @@ use Psr\Log\LoggerInterface as Logger;
 
 class Collection extends SearchResult
 {
+    /**
+     * @var string
+     */
     protected $_idFieldName = 'region_id';
 
     public function __construct(

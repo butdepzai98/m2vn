@@ -18,7 +18,7 @@ class Region extends AbstractDb
             'region_id' => $data[1],
             'name' => $data[2]
         ];
-        $this->getConnection()->insert('directory_country_region_name', $datafetch);
+        $this->getConnection()->insertOnDuplicate('directory_country_region_name', $datafetch,['locale','region_id','name']);
     }
 
     public function getRegionName($regionId)

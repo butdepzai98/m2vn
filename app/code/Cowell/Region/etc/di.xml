@@ -1,6 +1,17 @@
 <?xml version="1.0" ?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- CURD -->
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="cowell_region_index_listing_data_source" xsi:type="string">
+                    Cowell\Region\Model\ResourceModel\Region\Grid\Collection
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
     <!-- Import -->
     <type name="Magento\ImportExport\Model\Import\SampleFileProvider">
         <arguments>
@@ -23,16 +34,6 @@
                     Cowell\Region\Model\Import\Validator\CountryIdValidator
                 </item>
                 <item name="code" xsi:type="object">Cowell\Region\Model\Import\Validator\CodeValidator</item>
-            </argument>
-        </arguments>
-    </type>
-
-    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
-        <arguments>
-            <argument name="collections" xsi:type="array">
-                <item name="cowell_region_index_listing_data_source" xsi:type="string">
-                    Cowell\Region\Model\ResourceModel\Region\Grid\Collection
-                </item>
             </argument>
         </arguments>
     </type>

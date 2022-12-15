@@ -2,12 +2,17 @@
 
 namespace Cowell\Region\UI\Component\Listing\Column;
 
+use Magento\Framework\UrlInterface;
+
 class ListingDataProvider extends \Magento\Ui\Component\Listing\Columns\Column
 {
 
     const URL_PATH_DELETE = 'cowell_region/index/delete';
-    protected $urlBuilder;
     const URL_PATH_EDIT = 'cowell_region/index/edit';
+    /**
+     * @var UrlInterface
+     */
+    protected $urlBuilder;
 
     /**
      * @param \Magento\Framework\View\Element\UiComponent\ContextInterface $context

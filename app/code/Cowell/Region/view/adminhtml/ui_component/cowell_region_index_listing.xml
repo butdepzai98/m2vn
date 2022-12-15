@@ -17,7 +17,7 @@
             <button name="add">
                 <url path="*/*/new"/>
                 <class>primary</class>
-                <label translate="true">Thêm mới</label>
+                <label translate="true">Add new Region</label>
             </button>
         </buttons>
     </settings>
@@ -28,14 +28,13 @@
                 <param name="cacheRequests" xsi:type="boolean">false</param>
             </storageConfig>
             <updateUrl path="mui/index/render"/>
-            <!--            <validateUrl path="cowell_basictraining/index/validate"/>-->
         </settings>
         <aclResource>Cowell_Region::index</aclResource>
         <dataProvider class="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider"
                       name="cowell_region_index_listing_data_source">
             <settings>
                 <requestFieldName>id</requestFieldName>
-                <primaryFieldName>main_table.region_id</primaryFieldName>
+                <primaryFieldName>region_id</primaryFieldName>
             </settings>
         </dataProvider>
     </dataSource>
@@ -99,33 +98,7 @@
             </argument>
         </exportButton>
     </listingToolbar>
-
     <columns name="cowell_region_index_listing_columns">
-        <settings>
-            <editorConfig>
-                <param name="selectProvider" xsi:type="string">
-                    cowell_region_index_listing.cowell_region_index_listing.cowell_region_index_columns.ids
-                </param>
-                <param name="enabled" xsi:type="boolean">true</param>
-                <param name="indexField" xsi:type="string">region_id</param>
-                <param name="clientConfig" xsi:type="array">
-                    <item name="saveUrl" path="cowell_region/Index/inlineEdit" xsi:type="url"/>
-                    <item name="validateBeforeSave" xsi:type="boolean">false</item>
-                </param>
-            </editorConfig>
-            <childDefaults>
-                <param name="fieldAction" xsi:type="array">
-                    <item name="provider" xsi:type="string">
-                        cowell_region_index_listing.cowell_region_index_listing.cowell_region_index_columns_editor
-                    </item>
-                    <item name="target" xsi:type="string">startEdit</item>
-                    <item name="params" xsi:type="array">
-                        <item name="0" xsi:type="string">${ $.$data.rowIndex }</item>
-                        <item name="1" xsi:type="boolean">true</item>
-                    </item>
-                </param>
-            </childDefaults>
-        </settings>
         <selectionsColumn name="ids" sortOrder="10">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
@@ -135,55 +108,34 @@
                 </item>
             </argument>
         </selectionsColumn>
-        <column name="region_id" sortOrder="20">
+        <column name="region_id" sortOrder="1">
             <settings>
                 <filter>text</filter>
                 <label translate="true">ID</label>
                 <sorting>asc</sorting>
             </settings>
         </column>
-        <column name="name" sortOrder="30">
-            <settings>
-                <filter>text</filter>
-                <editor>
-                    <validation>
-                        <rule name="required-entry" xsi:type="boolean">true</rule>
-                    </validation>
-                    <editorType>text</editorType>
-                </editor>
-                <label translate="true">Region Name</label>
-            </settings>
-        </column>
-        <column name="iso3_code" sortOrder="40">
-            <settings>
-                <filter>text</filter>
-                <editor>
-                    <validation>
-                        <rule name="required-entry" xsi:type="boolean">true</rule>
-                    </validation>
-                    <editorType>date</editorType>
-                </editor>
-                <label translate="true">Country Code</label>
-            </settings>
-        </column>
-
-        <column name="country_id" sortOrder="50">
+        <column name="country_id" sortOrder="2">
             <settings>
                 <options class="Cowell\Region\Model\Config\Source\Region"/>
                 <filter>select</filter>
                 <dataType>select</dataType>
                 <label translate="true">Country ID</label>
-                <editor>
-                    <editorType>text</editorType>
-                    <validation>
-                        <rule name="required-entry" xsi:type="boolean">false</rule>
-                    </validation>
-                </editor>
             </settings>
         </column>
-
-        <actionsColumn name="actions" class="Cowell\Region\Ui\Component\Listing\Column\ListingDataProvider"
-                       sortOrder="80">
+        <column name="name" sortOrder="3">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Region Name</label>
+            </settings>
+        </column>
+        <column name="iso3_code" sortOrder="4">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Country Code</label>
+            </settings>
+        </column>
+        <actionsColumn name="actions" class="Cowell\Region\Ui\Component\Listing\Column\ListingDataProvider" sortOrder="100">
             <settings>
                 <indexField>id</indexField>
                 <resizeEnabled>false</resizeEnabled>
