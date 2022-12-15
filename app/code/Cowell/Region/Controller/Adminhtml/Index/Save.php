@@ -29,7 +29,7 @@ class Save extends \Magento\Backend\App\Action
         \Magento\Backend\App\Action\Context $context,
         \Magento\Framework\App\Request\DataPersistorInterface $dataPersistor,
         \Cowell\Region\Model\RegionFactory $regionFactory,
-        \Cowell\Region\Model\ResourceModel\Region $resourceModel,
+        \Cowell\Region\Model\ResourceModel\Region $resourceModel
     ) {
         $this->dataPersistor = $dataPersistor;
         $this->regionFactory = $regionFactory;

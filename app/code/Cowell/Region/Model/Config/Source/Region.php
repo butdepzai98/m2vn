@@ -16,7 +16,7 @@ class Region implements \Magento\Framework\Option\ArrayInterface
      * @param CollectionFactory $collectionFactory
      */
     public function __construct(
-        \Cowell\Region\Model\ResourceModel\Region\CollectionFactory $collectionFactory,
+        \Cowell\Region\Model\ResourceModel\Region\CollectionFactory $collectionFactory
     ) {
         $this->collectionFactory = $collectionFactory;
     }

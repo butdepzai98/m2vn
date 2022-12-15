@@ -3,22 +3,39 @@
 
 namespace Cowell\Region\Model;
 
+use Cowell\Region\Model\ResourceModel\Region;
 use Cowell\Region\Model\ResourceModel\Region\CollectionFactory;
 use Magento\Framework\App\Request\DataPersistorInterface;
+use Magento\Store\Model\StoreManagerInterface;
 use Magento\Ui\DataProvider\AbstractDataProvider;
 
 class DataProvider extends AbstractDataProvider
 {
 
+    /**
+     * @var DataPersistorInterface
+     */
     protected $dataPersistor;
 
+    /**
+     * @var
+     */
     protected $collection;
 
+    /**
+     * @var
+     */
     protected $loadedData;
 
+    /**
+     * @var StoreManagerInterface
+     */
     protected $storeManager;
-    protected $resourceModel;
 
+    /**
+     * @var Region
+     */
+    protected $resourceModel;
     /**
      * Constructor
      *
