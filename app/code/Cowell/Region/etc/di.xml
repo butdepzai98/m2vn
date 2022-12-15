@@ -23,8 +23,6 @@
                     Cowell\Region\Model\Import\Validator\CountryIdValidator
                 </item>
                 <item name="code" xsi:type="object">Cowell\Region\Model\Import\Validator\CodeValidator</item>
-                <item name="default_name" xsi:type="object">Cowell\Region\Model\Import\Validator\DefaultNameValidator
-                </item>
             </argument>
         </arguments>
     </type>

@@ -21,7 +21,7 @@ class RegionIdValidator implements ValidatorInterface
     /**
      * @inheritDoc
      */
-    public function validate(array $rowData, int $rowNumber, string $code, string $country_id, array $entityIdListFromDb)
+    public function validate(array $rowData, int $rowNumber, array $entityIdListFromDb)
     {
         $errors = [];
         $entityId = $rowData['region_id'];

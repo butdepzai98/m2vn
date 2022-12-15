@@ -20,6 +20,7 @@ class Region extends AbstractEntity
      * Table name
      */
     const TABLE = 'directory_country_region';
+    const TABLE_DIRECTORY_COUNTRY = 'directory_country';
 
     const ENTITY_ID_COLUMN = 'region_id';
 
@@ -47,8 +48,10 @@ class Region extends AbstractEntity
         'region_id',
         'country_id',
         'code',
-        'default_name'
+        'iso3_code'
     ];
+
+    protected $iso3ToImport;
 
     /**
      * @var AdapterInterface
@@ -182,9 +185,7 @@ class Region extends AbstractEntity
      */
     public function validateRow(array $rowData, $rowNum)
     {
-        $code = $this->requestInterface->getParam('code') ?? "";
-        $country_id = $this->requestInterface->getParam('country_id') ?? "";
-        $result = $this->validator->validate($rowData, $rowNum, $code, $country_id, $this->entityIdListFromDb);
+        $result = $this->validator->validate($rowData, $rowNum, $this->entityIdListFromDb);
 
         if ($result->isValid()) {
             return true;
@@ -239,7 +240,11 @@ class Region extends AbstractEntity
         $entityRow['region_id'] = $rowData['region_id'];
         $entityRow['country_id'] = $rowData['country_id'];
         $entityRow['code'] = $rowData['code'];
-        $entityRow['default_name'] = $rowData['default_name'];
+
+        $this->iso3ToImport[] = [
+            'country_id' => $rowData['country_id'],
+            'iso3_code' => $rowData['iso3_code']
+        ];
         return $entityRow;
     }
 
@@ -250,6 +255,7 @@ class Region extends AbstractEntity
     public function addUpdateRegion(array $entitiesToUpdate)
     {
         $this->connection->insertOnDuplicate(self::TABLE, $entitiesToUpdate);
+        $this->connection->insertOnDuplicate(self::TABLE_DIRECTORY_COUNTRY, $this->iso3ToImport);
         return $this;
     }
 }
