@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- Import -->
+    <type name="Magento\ImportExport\Model\Import\SampleFileProvider">
+        <arguments>
+            <argument name="samples" xsi:type="array">
+                <item name="region" xsi:type="string">Cowell_Region</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <preference for="Cowell\Region\Model\Import\Validator\ValidatorInterface"
+                type="Cowell\Region\Model\Import\Validator\ValidatorChain"/>
+
+    <type name="Cowell\Region\Model\Import\Validator\ValidatorChain">
+        <arguments>
+            <argument name="validators" xsi:type="array">
+                <item name="region_id" xsi:type="object">
+                    Cowell\Region\Model\Import\Validator\RegionIdValidator
+                </item>
+                <item name="country_id" xsi:type="object">
+                    Cowell\Region\Model\Import\Validator\CountryIdValidator
+                </item>
+                <item name="code" xsi:type="object">Cowell\Region\Model\Import\Validator\CodeValidator</item>
+                <item name="default_name" xsi:type="object">Cowell\Region\Model\Import\Validator\DefaultNameValidator
+                </item>
+            </argument>
+        </arguments>
+    </type>
+</config>

@@ -1,0 +1,6 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_ImportExport:etc/import.xsd">
+    <entity name="cowell_region" label="Region"
+            model="Cowell\Region\Model\Import\Region"
+            behaviorModel="Cowell\Region\Model\Import\Behavior\Region"/>
+</config>
