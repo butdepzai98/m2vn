@@ -1,0 +1,194 @@
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">
+                cowell_region_index_listing.cowell_region_index_listing_data_source
+            </item>
+        </item>
+    </argument>
+
+    <settings>
+        <spinner>cowell_region_index_listing_columns</spinner>
+        <deps>
+            <dep>cowell_region_index_listing.cowell_region_index_listing_data_source</dep>
+        </deps>
+        <buttons>
+            <button name="add">
+                <url path="*/*/new"/>
+                <class>primary</class>
+                <label translate="true">Thêm mới</label>
+            </button>
+        </buttons>
+    </settings>
+
+    <dataSource component="Magento_Ui/js/grid/provider" name="cowell_region_index_listing_data_source">
+        <settings>
+            <storageConfig>
+                <param name="cacheRequests" xsi:type="boolean">false</param>
+            </storageConfig>
+            <updateUrl path="mui/index/render"/>
+            <!--            <validateUrl path="cowell_basictraining/index/validate"/>-->
+        </settings>
+        <aclResource>Cowell_Region::index</aclResource>
+        <dataProvider class="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider"
+                      name="cowell_region_index_listing_data_source">
+            <settings>
+                <requestFieldName>id</requestFieldName>
+                <primaryFieldName>main_table.region_id</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+
+    <listingToolbar name="listing_top">
+        <settings>
+            <sticky>true</sticky>
+        </settings>
+        <bookmark name="bookmarks"/>
+        <columnsControls name="columns_controls"/>
+        <filterSearch name="fulltext"/>
+        <filters name="listing_filters">
+            <settings>
+                <templates>
+                    <filters>
+                        <select>
+                            <param name="template" xsi:type="string">ui/grid/filters/elements/ui-select</param>
+                            <param name="component" xsi:type="string">Magento_Ui/js/form/element/ui-select</param>
+                        </select>
+                    </filters>
+                </templates>
+            </settings>
+        </filters>
+        <massaction name="listing_massaction">
+            <action name="delete">
+                <settings>
+                    <confirm>
+                        <message translate="true">Are you sure you want to delete selected items?</message>
+                        <title translate="true">Delete items</title>
+                    </confirm>
+                    <url path="cowell_region/Index/massDelete"/>
+                    <type>delete</type>
+                    <label translate="true">Delete</label>
+                </settings>
+            </action>
+            <action name="edit">
+                <settings>
+                    <callback>
+                        <target>editSelected</target>
+                        <provider>
+                            cowell_region_index_listing.cowell_region_index_listing.cowell_region_index_columns_editor
+                        </provider>
+                    </callback>
+                    <type>edit</type>
+                    <label translate="true">Edit</label>
+                </settings>
+            </action>
+        </massaction>
+        <paging name="listing_paging"/>
+        <exportButton class="Magento\Ui\Component\ExportButton">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="options" xsi:type="array">
+                        <item name="xml" xsi:type="array">
+                            <item name="value" xsi:type="string">xml</item>
+                            <item name="label" xsi:type="string" translate="true">Excel XML</item>
+                            <item name="url" xsi:type="string">mui/export/gridToXml</item>
+                        </item>
+                    </item>
+                </item>
+            </argument>
+        </exportButton>
+    </listingToolbar>
+
+    <columns name="cowell_region_index_listing_columns">
+        <settings>
+            <editorConfig>
+                <param name="selectProvider" xsi:type="string">
+                    cowell_region_index_listing.cowell_region_index_listing.cowell_region_index_columns.ids
+                </param>
+                <param name="enabled" xsi:type="boolean">true</param>
+                <param name="indexField" xsi:type="string">region_id</param>
+                <param name="clientConfig" xsi:type="array">
+                    <item name="saveUrl" path="cowell_region/Index/inlineEdit" xsi:type="url"/>
+                    <item name="validateBeforeSave" xsi:type="boolean">false</item>
+                </param>
+            </editorConfig>
+            <childDefaults>
+                <param name="fieldAction" xsi:type="array">
+                    <item name="provider" xsi:type="string">
+                        cowell_region_index_listing.cowell_region_index_listing.cowell_region_index_columns_editor
+                    </item>
+                    <item name="target" xsi:type="string">startEdit</item>
+                    <item name="params" xsi:type="array">
+                        <item name="0" xsi:type="string">${ $.$data.rowIndex }</item>
+                        <item name="1" xsi:type="boolean">true</item>
+                    </item>
+                </param>
+            </childDefaults>
+        </settings>
+        <selectionsColumn name="ids" sortOrder="10">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="resizeEnabled" xsi:type="boolean">false</item>
+                    <item name="resizeDefaultWidth" xsi:type="string">55</item>
+                    <item name="indexField" xsi:type="string">region_id</item>
+                </item>
+            </argument>
+        </selectionsColumn>
+        <column name="region_id" sortOrder="20">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">ID</label>
+                <sorting>asc</sorting>
+            </settings>
+        </column>
+        <column name="name" sortOrder="30">
+            <settings>
+                <filter>text</filter>
+                <editor>
+                    <validation>
+                        <rule name="required-entry" xsi:type="boolean">true</rule>
+                    </validation>
+                    <editorType>text</editorType>
+                </editor>
+                <label translate="true">Region Name</label>
+            </settings>
+        </column>
+        <column name="iso3_code" sortOrder="40">
+            <settings>
+                <filter>text</filter>
+                <editor>
+                    <validation>
+                        <rule name="required-entry" xsi:type="boolean">true</rule>
+                    </validation>
+                    <editorType>date</editorType>
+                </editor>
+                <label translate="true">Country Code</label>
+            </settings>
+        </column>
+
+        <column name="country_id" sortOrder="50">
+            <settings>
+                <options class="Cowell\Region\Model\Config\Source\Region"/>
+                <filter>select</filter>
+                <dataType>select</dataType>
+                <label translate="true">Country ID</label>
+                <editor>
+                    <editorType>text</editorType>
+                    <validation>
+                        <rule name="required-entry" xsi:type="boolean">false</rule>
+                    </validation>
+                </editor>
+            </settings>
+        </column>
+
+        <actionsColumn name="actions" class="Cowell\Region\Ui\Component\Listing\Column\ListingDataProvider"
+                       sortOrder="80">
+            <settings>
+                <indexField>id</indexField>
+                <resizeEnabled>false</resizeEnabled>
+                <resizeDefaultWidth>107</resizeDefaultWidth>
+            </settings>
+        </actionsColumn>
+    </columns>
+</listing>

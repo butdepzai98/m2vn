@@ -28,4 +28,14 @@
             </argument>
         </arguments>
     </type>
+
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="cowell_region_index_listing_data_source" xsi:type="string">
+                    Cowell\Region\Model\ResourceModel\Region\Grid\Collection
+                </item>
+            </argument>
+        </arguments>
+    </type>
 </config>
