@@ -1,0 +1,19 @@
+<?php
+/**
+ * @var $block Magento\Catalog\Block\Product\View
+ */
+$_product = $block->getProduct();
+$format = $this->helper('Magento\Framework\Pricing\Helper\Data');
+
+?>
+
+<ul>
+    <li>
+        <strong><?= __('Shipping Method') ?>: </strong>
+        <span><?= $_product->getShippingMethods() ?></span>
+    </li>
+    <li>
+        <strong><?= __('Payment Method') ?>: </strong>
+        <span><?= $format->currency($_product->getPaymentFee(), true, false) ?></span>
+    </li>
+</ul>
