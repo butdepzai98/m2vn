@@ -21,9 +21,18 @@ class CountryIdValidator implements ValidatorInterface
     /**
      * @inheritDoc
      */
-    public function validate(array $rowData, int $rowNumber, int $code, int $country_id, array $entityIdListFromDb)
+    public function validate(array $rowData, int $rowNumber, string $code, string $country_id, array $entityIdListFromDb)
     {
         $errors = [];
+        $countryId = $rowData['country_id'];
+        $arrayCountryIds = [];
+        foreach ($entityIdListFromDb as $entity) {
+            $arrayCountryIds[] = $entity['country_id'];
+        }
+
+        if($countryId && !in_array($countryId, $arrayCountryIds)) {
+            $errors[] = __('CountryId  "%countryId" is incorrect !', ['countryId' => $rowData['country_id']]);
+        }
         return $this->validationResultFactory->create(['errors' => $errors]);
     }
 }

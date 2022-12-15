@@ -21,9 +21,19 @@ class CodeValidator implements ValidatorInterface
     /**
      * @inheritDoc
      */
-    public function validate(array $rowData, int $rowNumber, int $code, int $country_id, array $entityIdListFromDb)
+    public function validate(array $rowData, int $rowNumber, string $code, string $country_id, array $entityIdListFromDb)
     {
         $errors = [];
+        $arrayCodes = [];
+        $code = $rowData['code'];
+        foreach ($entityIdListFromDb as $entity) {
+            $arrayCodes[] = $entity['code'];
+        }
+
+        if($code && in_array($code, $arrayCodes)) {
+            $errors[] = __('Code  "%code" must be unique !', ['code' => $rowData['code']]);
+        }
+
         return $this->validationResultFactory->create(['errors' => $errors]);
     }
 }

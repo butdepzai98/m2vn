@@ -10,20 +10,23 @@ use Cowell\Region\Model\Import\Validator\ValidatorInterface;
 use Magento\Directory\Model\ResourceModel\Region\CollectionFactory as RegionCollectionFactory;
 use Magento\ImportExport\Model\Import\ErrorProcessing\ProcessingErrorAggregatorInterface;
 use Magento\Framework\MessageQueue\PublisherInterface;
+use Cowell\Region\Model\Import\Behavior\Region as RegionBehavior;
 
 class Region extends AbstractEntity
 {
-    const ENTITY_CODE = 'directory_country_region';
-
-    /**
-     * @var ValidatorInterface
-     */
-    protected $validator;
+    const ENTITY_CODE = 'cowell_region';
 
     /**
      * Table name
      */
     const TABLE = 'directory_country_region';
+
+    const ENTITY_ID_COLUMN = 'region_id';
+
+    /**
+     * @var ValidatorInterface
+     */
+    protected $validator;
 
     protected $publisher;
 
@@ -53,6 +56,13 @@ class Region extends AbstractEntity
     private AdapterInterface $connection;
 
     /**
+     * Permanent entity columns.
+     */
+    protected $_permanentAttributes = [
+        'region_id'
+    ];
+
+    /**
      * @var RequestInterface
      */
     private $requestInterface;
@@ -64,14 +74,17 @@ class Region extends AbstractEntity
 
     protected $entityIdListFromDb;
 
+    /**
+     * @var ResourceConnection
+     */
+    private $resource;
+
     public function __construct(
         \Magento\Framework\Json\Helper\Data                   $jsonHelper,
         \Magento\ImportExport\Helper\Data                     $importExportData,
         \Magento\ImportExport\Model\ResourceModel\Import\Data $importData,
-        \Magento\Eav\Model\Config                             $config,
         ResourceConnection                                    $resource,
         \Magento\ImportExport\Model\ResourceModel\Helper      $resourceHelper,
-        \Magento\Framework\Stdlib\StringUtils                 $string,
         ProcessingErrorAggregatorInterface                    $errorAggregator,
         PublisherInterface                                    $publisher,
         ValidatorInterface                                    $validator,
@@ -79,16 +92,13 @@ class Region extends AbstractEntity
         RegionCollectionFactory                               $regionCollection
     )
     {
-        parent::__construct(
-            $jsonHelper,
-            $importExportData,
-            $importData,
-            $config,
-            $resource,
-            $resourceHelper,
-            $string,
-            $errorAggregator
-        );
+        $this->jsonHelper = $jsonHelper;
+        $this->_importExportData = $importExportData;
+        $this->_resourceHelper = $resourceHelper;
+        $this->_dataSourceModel = $importData;
+        $this->resource = $resource;
+        $this->connection = $resource->getConnection(ResourceConnection::DEFAULT_CONNECTION);
+        $this->errorAggregator = $errorAggregator;
         $this->publisher = $publisher;
         $this->validator = $validator;
         $this->requestInterface = $requestInterface;
@@ -126,9 +136,9 @@ class Region extends AbstractEntity
     public function addEntity()
     {
         while ($bunch = $this->_dataSourceModel->getNextBunch()) {
-            $standardShippingDatesToCreate = [];
-            $standardShippingDatesToUpdate = [];
-            $standardShippingDatesData = [];
+            $dataToCreate = [];
+            $dataToUpdate = [];
+            $dataToImport = [];
 
             foreach ($bunch as $rowNum => $rowData) {
                 if (!$this->validateRow($rowData, $rowNum)) {
@@ -140,23 +150,23 @@ class Region extends AbstractEntity
                 }
 
                 // prepare data to count
-                if ($rowData['id']) {
-                    $standardShippingDatesToUpdate[] = 'data update';
+                if ($rowData['region_id']) {
+                    $dataToUpdate[] = 'data update';
                 } else {
-                    $standardShippingDatesToCreate[] = 'data create';
+                    $dataToCreate[] = 'data create';
                 }
 
-                $standardShippingDatesData[] = $this->prepareProductStandardShippingDateData($rowData);
+                $dataToImport[] = $this->prepareDataToImport($rowData);
             }
 
             // count record created to report
-            $dataCreate = $standardShippingDatesToCreate;
-            $this->updateItemsCounterStats($dataCreate, $standardShippingDatesToUpdate);
+            $dataCreate = $dataToCreate;
+            $this->updateItemsCounterStats($dataCreate, $dataToUpdate);
             try {
                 $this->connection->beginTransaction();
 
-                if ($this->getBehavior() == ProductStandardShippingDateBehavior::BEHAVIOR_ADD_UPDATE) {
-                    $this->addUpdateStandardShippingDate($standardShippingDatesData);
+                if ($this->getBehavior() == RegionBehavior::BEHAVIOR_ADD_UPDATE) {
+                    $this->addUpdateRegion($dataToImport);
                 }
 
                 $this->connection->commit();
@@ -165,47 +175,6 @@ class Region extends AbstractEntity
                 throw $e;
             }
         }
-
-//        while ($bunch = $this->_dataSourceModel->getNextBunch()) {
-//            $standardShippingDatesToCreate = [];
-//            $standardShippingDatesToUpdate = [];
-//            $standardShippingDatesData = [];
-//
-//            foreach ($bunch as $rowNum => $rowData) {
-//                if (!$this->validateRow($rowData, $rowNum)) {
-//                    continue;
-//                }
-//                if ($this->getErrorAggregator()->hasToBeTerminated()) {
-//                    $this->getErrorAggregator()->addRowToSkip($rowNum);
-//                    continue;
-//                }
-//
-//                // prepare data to count
-//                if ($rowData['id']) {
-//                    $standardShippingDatesToUpdate[] = 'data update';
-//                } else {
-//                    $standardShippingDatesToCreate[] = 'data create';
-//                }
-//
-//                $standardShippingDatesData[] = $this->prepareProductStandardShippingDateData($rowData);
-//            }
-//
-//            // count record created to report
-//            $dataCreate = $standardShippingDatesToCreate;
-//            $this->updateItemsCounterStats($dataCreate, $standardShippingDatesToUpdate);
-//            try {
-//                $this->connection->beginTransaction();
-//
-//                if ($this->getBehavior() == ProductStandardShippingDateBehavior::BEHAVIOR_ADD_UPDATE) {
-//                    $this->addUpdateStandardShippingDate($standardShippingDatesData);
-//                }
-//
-//                $this->connection->commit();
-//            } catch (Exception $e) {
-//                $this->connection->rollBack();
-//                throw $e;
-//            }
-//        }
     }
 
     /**
@@ -213,8 +182,8 @@ class Region extends AbstractEntity
      */
     public function validateRow(array $rowData, $rowNum)
     {
-        $code = $this->requestInterface->getParam('code');;
-        $country_id = $this->requestInterface->getParam('country_id');;
+        $code = $this->requestInterface->getParam('code') ?? "";
+        $country_id = $this->requestInterface->getParam('country_id') ?? "";
         $result = $this->validator->validate($rowData, $rowNum, $code, $country_id, $this->entityIdListFromDb);
 
         if ($result->isValid()) {
@@ -251,7 +220,36 @@ class Region extends AbstractEntity
     {
         $regions = $this->regionCollection->create();
         foreach ($regions->getData() as $item) {
-            $this->entityIdListFromDb[] = $item['region_id'];
+            $this->entityIdListFromDb[] = [
+                'country_id' => $item['country_id'],
+                'code' => $item['code'],
+                'region_id' => $item['region_id']
+            ];
         }
+    }
+
+    /**
+     * prepare Data To Import
+     * @param $rowData
+     * @return array
+     */
+    public function prepareDataToImport($rowData): array
+    {
+        $entityRow = [];
+        $entityRow['region_id'] = $rowData['region_id'];
+        $entityRow['country_id'] = $rowData['country_id'];
+        $entityRow['code'] = $rowData['code'];
+        $entityRow['default_name'] = $rowData['default_name'];
+        return $entityRow;
+    }
+
+    /**
+     * @param array $entitiesToUpdate
+     * @return $this
+     */
+    public function addUpdateRegion(array $entitiesToUpdate)
+    {
+        $this->connection->insertOnDuplicate(self::TABLE, $entitiesToUpdate);
+        return $this;
     }
 }

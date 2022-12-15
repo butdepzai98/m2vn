@@ -21,15 +21,21 @@ class RegionIdValidator implements ValidatorInterface
     /**
      * @inheritDoc
      */
-    public function validate(array $rowData, int $rowNumber, int $code, int $country_id, array $entityIdListFromDb)
+    public function validate(array $rowData, int $rowNumber, string $code, string $country_id, array $entityIdListFromDb)
     {
         $errors = [];
-        $entityId = $rowData['id'];
+        $entityId = $rowData['region_id'];
         if ($entityId && !is_numeric($entityId)) {
-            $errors[] = __('ID  "%id" must be type of numeric, error ', ['id' => $rowData['id']]);
+            $errors[] = __('region_id  "%id" must be type of numeric, error ', ['id' => $rowData['region_id']]);
         }
-        if ($entityId && !in_array($entityId, $entityIdListFromDb)) {
-            $errors[] = __('ID  "%id" not exits in Database, error ', ['id' => $rowData['id']]);
+
+        $arrayCountryIds = [];
+        foreach ($entityIdListFromDb as $entity) {
+            $arrayCountryIds[] = $entity['country_id'];
+        }
+
+        if ($entityId && !in_array($entityId, $arrayCountryIds)) {
+            $errors[] = __('region_id  "%id" not exits in Database, error ', ['id' => $rowData['region_id']]);
         }
 
         return $this->validationResultFactory->create(['errors' => $errors]);

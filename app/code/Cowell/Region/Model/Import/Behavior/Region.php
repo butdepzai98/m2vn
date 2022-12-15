@@ -23,6 +23,6 @@ class Region extends AbstractBehavior
      */
     public function getCode()
     {
-        return 'cowell_region';
+        return 'cowellRegion';
     }
 }

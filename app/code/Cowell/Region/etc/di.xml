@@ -5,7 +5,7 @@
     <type name="Magento\ImportExport\Model\Import\SampleFileProvider">
         <arguments>
             <argument name="samples" xsi:type="array">
-                <item name="region" xsi:type="string">Cowell_Region</item>
+                <item name="cowell_region" xsi:type="string">Cowell_Region</item>
             </argument>
         </arguments>
     </type>

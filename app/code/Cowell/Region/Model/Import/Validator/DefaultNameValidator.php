@@ -21,7 +21,7 @@ class DefaultNameValidator implements ValidatorInterface
     /**
      * @inheritDoc
      */
-    public function validate(array $rowData, int $rowNumber, int $code, int $country_id, array $entityIdListFromDb)
+    public function validate(array $rowData, int $rowNumber, string $code, string $country_id, array $entityIdListFromDb)
     {
         $errors = [];
         return $this->validationResultFactory->create(['errors' => $errors]);

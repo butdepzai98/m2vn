@@ -34,7 +34,7 @@ class ValidatorChain implements ValidatorInterface
         $this->validators = $validators;
     }
 
-    public function validate(array $rowData, int $rowNumber, int $code, int $country_id, array $entityIdListFromDb)
+    public function validate(array $rowData, int $rowNumber, string $code, string $country_id, array $entityIdListFromDb)
     {
         /* the inner empty array covers cases when no loops were made */
         $errors = [[]];
